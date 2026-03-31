@@ -94,18 +94,42 @@ Forces a delay (in seconds) between crawl requests when the API caller doesn't s
 
 Combined with `CRAWL_CONCURRENT_REQUESTS=3` (default is 10), this keeps the scraper polite to target sites.
 
-## Claude Code MCP integration
+## Claude Code integration
 
-To give Claude Code access to Firecrawl tools (scrape, crawl, search, etc.), add the MCP server:
+Install the Firecrawl CLI and the official Claude Code plugin to give Claude access to scrape, crawl, search, and browser tools — all routed through the self-hosted API.
+
+### 1. Install the CLI
 
 ```bash
-claude mcp add firecrawl \
-  -e "FIRECRAWL_API_URL=http://localhost:3002" \
-  --scope user \
-  -- npx -y firecrawl-mcp
+npm install -g firecrawl-cli
 ```
 
-This registers the Firecrawl MCP server at user scope so it's available across all projects. The `FIRECRAWL_API_URL` points at the self-hosted API on port 3002.
+### 2. Configure environment
+
+Add to `~/.bashrc` (or `~/.zshrc`):
+
+```bash
+export FIRECRAWL_API_URL=http://localhost:3002
+export FIRECRAWL_API_KEY=fc-selfhosted
+```
+
+Reload your shell or run `source ~/.bashrc`.
+
+### 3. Install the Claude Code plugin
+
+```bash
+claude plugins install firecrawl@claude-plugins-official --scope user
+```
+
+Restart Claude Code after installing.
+
+### 4. Verify
+
+```bash
+firecrawl --status
+```
+
+Should show "Authenticated via FIRECRAWL_API_KEY" with 99,999,999 credits (self-hosted unlimited).
 
 ## Common pitfalls
 
