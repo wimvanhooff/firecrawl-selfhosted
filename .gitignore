@@ -1,0 +1,5 @@
+# Firecrawl .env contains secrets
+firecrawl/.env
+
+# Docker volumes / runtime
+firecrawl/data/

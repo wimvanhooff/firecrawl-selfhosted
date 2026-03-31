@@ -1,0 +1,46 @@
+diff --git a/apps/api/src/config.ts b/apps/api/src/config.ts
+index 01baba795..71c74a1d3 100644
+--- a/apps/api/src/config.ts
++++ b/apps/api/src/config.ts
+@@ -142,6 +142,9 @@ const configSchema = z.object({
+   CONNECTION_MONITOR_INTERVAL: z.coerce.number().default(10),
+   CANT_ACCEPT_CONNECTION_INTERVAL: z.coerce.number().default(2000),
+ 
++  // Crawl delay
++  DEFAULT_CRAWL_DELAY: z.coerce.number().default(0),
++
+   // Proxy
+   PROXY_SERVER: z.string().optional(),
+   PROXY_USERNAME: z.string().optional(),
+diff --git a/apps/api/src/controllers/v1/crawl.ts b/apps/api/src/controllers/v1/crawl.ts
+index 67bf7eb10..812bde8a1 100644
+--- a/apps/api/src/controllers/v1/crawl.ts
++++ b/apps/api/src/controllers/v1/crawl.ts
+@@ -147,6 +147,11 @@ export async function crawlController(
+     // if (robotsCrawlDelay !== null && !sc.crawlerOptions.delay) {
+     //   sc.crawlerOptions.delay = robotsCrawlDelay;
+     // }
++
++    // Apply default crawl delay if the caller didn't specify one
++    if (!sc.crawlerOptions.delay && config.DEFAULT_CRAWL_DELAY > 0) {
++      sc.crawlerOptions.delay = config.DEFAULT_CRAWL_DELAY;
++    }
+   } catch (e) {
+     logger.debug("Failed to get robots.txt (this is probably fine!)", {
+       error: e,
+diff --git a/apps/api/src/controllers/v2/crawl.ts b/apps/api/src/controllers/v2/crawl.ts
+index 4f59e94c3..1130e968a 100644
+--- a/apps/api/src/controllers/v2/crawl.ts
++++ b/apps/api/src/controllers/v2/crawl.ts
+@@ -206,6 +206,11 @@ export async function crawlController(
+     // if (robotsCrawlDelay !== null && !sc.crawlerOptions.delay) {
+     //   sc.crawlerOptions.delay = robotsCrawlDelay;
+     // }
++
++    // Apply default crawl delay if the caller didn't specify one
++    if (!sc.crawlerOptions.delay && config.DEFAULT_CRAWL_DELAY > 0) {
++      sc.crawlerOptions.delay = config.DEFAULT_CRAWL_DELAY;
++    }
+   } catch (e) {
+     logger.debug("Failed to get robots.txt (this is probably fine!)", {
+       error: e,
